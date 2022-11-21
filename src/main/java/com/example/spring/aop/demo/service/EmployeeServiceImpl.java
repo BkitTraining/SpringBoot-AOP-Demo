@@ -1,5 +1,6 @@
 package com.example.spring.aop.demo.service;
 
+import com.example.spring.aop.demo.annotation.LogMethod;
 import com.example.spring.aop.demo.exception.ResourceNotFoundException;
 import com.example.spring.aop.demo.model.EmployeeEntity;
 import com.example.spring.aop.demo.repository.EmployeeRepository;
@@ -8,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@LogMethod
 public class EmployeeServiceImpl implements EmployeeService {
 
   private final EmployeeRepository employeeRepository;
@@ -22,8 +23,9 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public Optional<EmployeeEntity> getEmployeeById(Long employeeId) {
-    return employeeRepository.findById(employeeId);
+  public EmployeeEntity getEmployeeById(Long employeeId) throws ResourceNotFoundException {
+    return employeeRepository.findById(employeeId)
+        .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
   }
 
   @Override
@@ -34,8 +36,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   @Override
   @Transactional
-  public EmployeeEntity updateEmployee(Long employeeId,
-                                       EmployeeEntity employeeEntityDetails) throws ResourceNotFoundException {
+  public EmployeeEntity updateEmployee(Long employeeId, EmployeeEntity employeeEntityDetails) throws ResourceNotFoundException {
     EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
         .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
     employeeEntity.setEmail(employeeEntityDetails.getEmail());
@@ -45,8 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public void deleteEmployee(Long employeeId)
-      throws ResourceNotFoundException {
+  public void deleteEmployee(Long employeeId) throws ResourceNotFoundException {
     EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
         .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
     employeeRepository.delete(employeeEntity);

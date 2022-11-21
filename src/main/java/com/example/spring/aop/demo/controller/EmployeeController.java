@@ -32,8 +32,7 @@ public class EmployeeController {
   @GetMapping("/employees/{id}")
   public ResponseEntity<EmployeeEntity> getEmployeeById(@PathVariable(value = "id") Long employeeId)
       throws ResourceNotFoundException {
-    EmployeeEntity employeeEntity = employeeService.getEmployeeById(employeeId)
-        .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
+    EmployeeEntity employeeEntity = employeeService.getEmployeeById(employeeId);
     return ResponseEntity.ok().body(employeeEntity);
   }
 
@@ -43,8 +42,8 @@ public class EmployeeController {
   }
 
   @PutMapping("/employees/{id}")
-  public ResponseEntity<EmployeeEntity> updateEmployee(@PathVariable(value = "id") Long employeeId,
-                                                       @Validated @RequestBody EmployeeEntity employeeEntityDetails) throws ResourceNotFoundException {
+  public ResponseEntity<EmployeeEntity> updateEmployee(@PathVariable(value = "id") Long employeeId, @Validated @RequestBody EmployeeEntity employeeEntityDetails)
+      throws ResourceNotFoundException {
     EmployeeEntity updatedEmployeeEntity = employeeService.updateEmployee(employeeId, employeeEntityDetails);
     return ResponseEntity.ok(updatedEmployeeEntity);
   }
