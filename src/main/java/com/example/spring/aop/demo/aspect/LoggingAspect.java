@@ -2,16 +2,18 @@ package com.example.spring.aop.demo.aspect;
 
 import com.example.spring.aop.demo.annotation.LogMethod;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StopWatch;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -20,12 +22,12 @@ import java.util.stream.IntStream;
 @Log4j2
 public class LoggingAspect {
 
-  private static final StopWatch stopWatch = new StopWatch();
-
   @Around("@within(logMethod) || @annotation(logMethod)")
   public Object logMethodExecution(ProceedingJoinPoint pjp, LogMethod logMethod) throws Throwable {
     final MethodSignature signature = (MethodSignature) pjp.getSignature();
     final Method method = signature.getMethod();
+    final StopWatch stopWatch = new StopWatch();
+    Set<String> as;
     try {
       final String arguments = IntStream.iterate(0, i -> i + 1)
           .limit(Math.min(signature.getParameterNames().length, pjp.getArgs().length))
@@ -35,16 +37,17 @@ public class LoggingAspect {
       stopWatch.start();
       final Object result = pjp.proceed();
       stopWatch.stop();
-      log.info("Finish execution of {} (running {} ns)", method, stopWatch.getTotalTimeNanos());
+      log.info("Finish execution of {} (running {} ms)", method, stopWatch.getTime());
       return result;
     } catch (Exception ex) {
-      log.error("Fail execution of {} (running {} ns)", method, stopWatch.getTotalTimeNanos(), ex);
+      stopWatch.stop();
+      log.error("Fail execution of {} (running {} ms)", method, stopWatch.getTime(), ex);
       throw ex;
     }
   }
 
   @AfterThrowing(value = "@within(logMethod) || @annotation(logMethod)", throwing = "error")
-  public void logAfterThrowing(JoinPoint pjp, LogMethod logMethod, Throwable error) {
+  public void logAfterThrowing(JoinPoint pjp, LogMethod logMethod, Throwable error) throws InterruptedException {
     final MethodSignature signature = (MethodSignature) pjp.getSignature();
     final Method method = signature.getMethod();
     final String arguments = IntStream.iterate(0, i -> i + 1)
@@ -55,6 +58,7 @@ public class LoggingAspect {
         method,
         error.getCause() != null ? error.getCause() : "NULL",
         arguments);
+    Thread.sleep(2000);
   }
 
 }

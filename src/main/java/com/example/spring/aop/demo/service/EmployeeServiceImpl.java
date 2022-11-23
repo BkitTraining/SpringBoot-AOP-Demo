@@ -5,6 +5,7 @@ import com.example.spring.aop.demo.exception.ResourceNotFoundException;
 import com.example.spring.aop.demo.model.EmployeeEntity;
 import com.example.spring.aop.demo.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @LogMethod
+@Log4j2
 public class EmployeeServiceImpl implements EmployeeService {
 
   private final EmployeeRepository employeeRepository;
@@ -31,6 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Override
   @Transactional
   public EmployeeEntity addEmployee(EmployeeEntity employeeEntity) {
+    log.info("add employee");
     return employeeRepository.save(employeeEntity);
   }
 

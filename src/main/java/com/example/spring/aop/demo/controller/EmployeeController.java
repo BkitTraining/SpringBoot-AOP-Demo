@@ -1,5 +1,6 @@
 package com.example.spring.aop.demo.controller;
 
+import com.example.spring.aop.demo.annotation.LogMethod;
 import com.example.spring.aop.demo.exception.ResourceNotFoundException;
 import com.example.spring.aop.demo.model.EmployeeEntity;
 import com.example.spring.aop.demo.service.EmployeeService;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @AllArgsConstructor
+@LogMethod
 public class EmployeeController {
 
   private final EmployeeService employeeService;
