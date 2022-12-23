@@ -43,10 +43,10 @@ public class EmployeeController {
     return employeeService.addEmployee(employeeEntity);
   }
 
-  @PutMapping("/employees/{id}")
-  public ResponseEntity<EmployeeEntity> updateEmployee(@PathVariable(value = "id") Long employeeId, @Validated @RequestBody EmployeeEntity employeeEntityDetails)
+  @PutMapping("/employees")
+  public ResponseEntity<EmployeeEntity> updateEmployee(@Validated @RequestBody EmployeeEntity employeeEntityDetails)
       throws ResourceNotFoundException {
-    EmployeeEntity updatedEmployeeEntity = employeeService.updateEmployee(employeeId, employeeEntityDetails);
+    EmployeeEntity updatedEmployeeEntity = employeeService.updateEmployee(employeeEntityDetails.getId(), employeeEntityDetails);
     return ResponseEntity.ok(updatedEmployeeEntity);
   }
 

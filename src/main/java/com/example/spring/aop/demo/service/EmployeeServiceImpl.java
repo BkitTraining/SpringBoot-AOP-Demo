@@ -33,19 +33,29 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Override
   @Transactional
   public EmployeeEntity addEmployee(EmployeeEntity employeeEntity) {
-    log.info("add employee");
+    extracted();
     return employeeRepository.save(employeeEntity);
+  }
+
+  @LogMethod
+  private void extracted() {
+    log.info("add employee");
   }
 
   @Override
   @Transactional
   public EmployeeEntity updateEmployee(Long employeeId, EmployeeEntity employeeEntityDetails) throws ResourceNotFoundException {
+    //TODO: Add Code Logging
+
+    // Business logic
     EmployeeEntity employeeEntity = employeeRepository.findById(employeeId)
         .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
     employeeEntity.setEmail(employeeEntityDetails.getEmail());
     employeeEntity.setLastName(employeeEntityDetails.getLastName());
     employeeEntity.setFirstName(employeeEntityDetails.getFirstName());
+
     return employeeRepository.save(employeeEntity);
+    //TODO: Add Code Update Cache
   }
 
   @Override

@@ -4,7 +4,6 @@ import com.example.spring.aop.demo.exception.ResourceNotFoundException;
 import com.example.spring.aop.demo.model.EmployeeEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EmployeeService {
   List<EmployeeEntity> getAllEmployees();
